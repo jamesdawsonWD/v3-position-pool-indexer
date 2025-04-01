@@ -17,8 +17,8 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
     loader: async ({ event, context }) => {
         return Promise.all([
             context.Factory.get(CHAIN_CONFIGS[event.chainId].factoryAddress),
-            context.Token.get(event.params.token0),
-            context.Token.get(event.params.token1)
+            context.Token.get(`${event.chainId}-${event.params.token0}`),
+            context.Token.get(`${event.chainId}-${event.params.token1}`)
         ]);
     },
 
@@ -70,6 +70,9 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
 
         factory.poolCount = factory.poolCount + ONE_BI;
         const tokens = [];
+
+        context.log.debug(`${token0RO?.name}`);
+        context.log.debug(`${token1RO?.name}`);
 
         try {
             const arr = [];
