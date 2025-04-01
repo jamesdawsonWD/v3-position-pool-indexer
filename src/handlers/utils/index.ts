@@ -66,6 +66,10 @@ export function isNullEthValue(value: string): boolean {
     return value === NULL_ETH_HEX_STRING;
 }
 
+export function createPoolAddress(chainId: number, address: string): string {
+    return `${chainId}-${address.toLowerCase()}`
+}
+
 export function convertTokenToDecimal(
     tokenAmount: bigint,
     exchangeDecimals: bigint
@@ -79,21 +83,21 @@ export function convertTokenToDecimal(
 }
 
 export async function loadTransaction(
-    txHash: string, 
+    txHash: string,
     blockNumber: number,
     timestamp: number,
     gasPrice: bigint,
     context: handlerContext
 ): Promise<Transaction> {
     const txRO = await context.Transaction.get(txHash);
-    const transaction = txRO ? {...txRO} :
-                        {
-                            id: txHash,
-                            blockNumber: 0,
-                            timestamp: 0,
-                            gasUsed: ZERO_BI, //needs to be moved to transaction receipt
-                            gasPrice: ZERO_BI
-                        };
+    const transaction = txRO ? { ...txRO } :
+        {
+            id: txHash,
+            blockNumber: 0,
+            timestamp: 0,
+            gasUsed: ZERO_BI, //needs to be moved to transaction receipt
+            gasPrice: ZERO_BI
+        };
 
     transaction.blockNumber = blockNumber;
     transaction.timestamp = timestamp;

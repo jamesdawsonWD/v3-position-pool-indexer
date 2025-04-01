@@ -1,19 +1,20 @@
 import {
-  UniswapV3Factory,
-  Bundle,
-  Token,
-  Pool,
+    UniswapV3Factory,
+    Token,
+    Pool,
+    Bundle,
 } from "generated";
 import { ZERO_BD, ZERO_BI, ONE_BI, ADDRESS_ZERO } from "./utils/constants";
 import { CHAIN_CONFIGS } from "./utils/chains";
 import { getTokenMetadata } from "./utils/tokenMetadata";
+import { createPoolAddress } from "./utils";
 
 UniswapV3Factory.PoolCreated.contractRegister(({ event, context }) => {
-  context.addUniswapV3Pool(event.params.pool);
+    context.addUniswapV3Pool(event.params.pool);
 }, { preRegisterDynamicContracts: true });
 
 UniswapV3Factory.PoolCreated.handlerWithLoader({
-    loader: async ({event, context}) => {
+    loader: async ({ event, context }) => {
         return Promise.all([
             context.Factory.get(CHAIN_CONFIGS[event.chainId].factoryAddress),
             context.Token.get(event.params.token0),
@@ -21,7 +22,7 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
         ]);
     },
 
-    handler: async ({event, context, loaderReturn}) => {
+    handler: async ({ event, context, loaderReturn }) => {
         const {
             factoryAddress,
             whitelistTokens,
@@ -37,7 +38,7 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
         let factory;
 
         if (factoryRO) {
-            factory = {...factoryRO};
+            factory = { ...factoryRO };
         } else {
             factory = {
                 id: factoryAddress,
@@ -72,25 +73,25 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
 
         try {
             const arr = [];
-    
+
             if (token0RO) {
-                tokens[0] = {...token0RO};
+                tokens[0] = { ...token0RO };
             } else {
                 arr.push(
                     getToken(event.params.token0, event.chainId)
-                    .then(token => tokens[0] = token)
+                        .then(token => tokens[0] = token)
                 );
             }
-    
+
             if (token1RO) {
-                tokens[1] = {...token1RO};
+                tokens[1] = { ...token1RO };
             } else {
                 arr.push(
                     getToken(event.params.token1, event.chainId)
-                    .then(token => tokens[1] = token)
+                        .then(token => tokens[1] = token)
                 );
             }
-    
+
             if (arr.length) {
                 await Promise.all(arr);
             }
@@ -99,8 +100,10 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
             return;
         }
 
+        const poolId = createPoolAddress(event.chainId, event.params.pool);
+
         const pool: Pool = {
-            id: `${event.chainId}-${event.params.pool}`,
+            id: poolId,
             createdAtTimestamp: BigInt(event.block.timestamp),
             createdAtBlockNumber: BigInt(event.block.number),
             token0_id: tokens[0].id,

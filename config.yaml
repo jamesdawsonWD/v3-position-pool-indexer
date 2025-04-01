@@ -1,38 +1,94 @@
 # yaml-language-server: $schema=./node_modules/envio/evm.schema.json
 name: uni_v3
-networks:
-- id: 42161
-  start_block: 0
-  contracts:
+unordered_multichain_mode: true
+raw_events: true
+contracts:
   - name: UniswapV3Factory
-    address: 0x1F98431c8aD98523631AE4a59f267346ea31F984
     handler: src/EventHandlers.ts
     events:
-    - event: PoolCreated(address indexed token0, address indexed token1, uint24 indexed fee, int24 tickSpacing, address pool)
+      - event: PoolCreated(address indexed token0, address indexed token1, uint24 indexed fee, int24 tickSpacing, address pool)
+
   - name: UniswapV3Pool
     handler: src/EventHandlers.ts
     events:
-    - event: Initialize(uint160 sqrtPriceX96, int24 tick)
-    - event: Collect(address indexed owner, address recipient, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount0, uint128 amount1)
-      field_selection:
-        transaction_fields:
-        - hash
-        - gasPrice
-    - event: Burn(address indexed owner, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount, uint256 amount0, uint256 amount1)
-      field_selection:
-        transaction_fields:
-        - hash
-        - gasPrice
-        - from
-    - event: Mint(address sender, address indexed owner, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount, uint256 amount0, uint256 amount1)
-      field_selection:
-        transaction_fields:
-        - hash
-        - gasPrice
-        - from
-    - event: Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)
-      field_selection:
-        transaction_fields:
-        - hash
-        - gasPrice
-        - from
+      - event: Initialize(uint160 sqrtPriceX96, int24 tick)
+      - event: Collect(address indexed owner, address recipient, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount0, uint128 amount1)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+      - event: Burn(address indexed owner, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount, uint256 amount0, uint256 amount1)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+      - event: Mint(address sender, address indexed owner, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount, uint256 amount0, uint256 amount1)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+      - event: Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+
+  - name: NonfungiblePositionManager
+    handler: src/EventHandlers.ts
+    events:
+      - event: IncreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+
+      - event: DecreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+
+      - event: Collect(uint256 indexed tokenId, address recipient, uint256 amount0, uint256 amount1)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+
+      - event: Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
+        field_selection:
+          transaction_fields:
+            - hash
+            - gasPrice
+            - from
+
+networks:
+  - id: 8453 # Base
+    start_block: 0
+    hypersync_config:
+      url: https://base.hypersync.xyz
+    contracts:
+      - name: UniswapV3Factory
+        address:
+          - 0x33128a8fC17869897dcE68Ed026d694621f6FDfD
+      - name: NonfungiblePositionManager
+        address:
+          - 0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1
+      - name: UniswapV3Pool
+  - id: 130 # Unichain
+    hypersync_config:
+      url: https://130.hypersync.xyz
+    start_block: 0
+    contracts:
+      - name: UniswapV3Factory
+        address:
+          - 0x1F98400000000000000000000000000000000003
+      - name: NonfungiblePositionManager
+        address:
+          - 0x943e6e07a7E8E791dAFC44083e54041D743C46E9
+      - name: UniswapV3Pool

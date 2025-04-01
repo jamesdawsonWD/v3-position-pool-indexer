@@ -10,73 +10,45 @@ import {
   Token,
   TokenDayData,
   TokenHourData,
-  UniswapDayData,
 } from 'generated';
 
-export async function updateUniswapDayData(
-  timestamp: number,
-  factory: Factory,
-  context: handlerContext
-): Promise<UniswapDayData> {
-  const dayID = Math.floor(timestamp / 86400); // rounded
-  const dayStartTimestamp = dayID * 86400;
-  let uniswapDayDataRO = await context.UniswapDayData.get(dayID.toString());
-  let uniswapDayData = uniswapDayDataRO ? {...uniswapDayDataRO} :
-                        {
-                          id: dayID.toString(),
-                          date: dayStartTimestamp,
-                          volumeETH: ZERO_BD,
-                          volumeUSD: ZERO_BD,
-                          volumeUSDUntracked: ZERO_BD,
-                          feesUSD: ZERO_BD,
-                          tvlUSD: ZERO_BD,
-                          txCount: ZERO_BI
-                        };
-
-  uniswapDayData.tvlUSD = factory.totalValueLockedUSD;
-  uniswapDayData.txCount = factory.txCount;
-
-  context.UniswapDayData.set(uniswapDayData);
-  return uniswapDayData;
-}
-
 export async function updatePoolDayData(
-  timestamp: number, 
-  pool: Pool, 
+  timestamp: number,
+  pool: Pool,
   context: handlerContext
 ): Promise<PoolDayData> {
   const dayID = Math.floor(timestamp / 86400);
   const dayStartTimestamp = dayID * 86400;
   const dayPoolID = `${pool.id}-${dayID}`;
   const poolDayDataRO = await context.PoolDayData.get(dayPoolID);
-  const poolDayData = poolDayDataRO ? {...poolDayDataRO} :
-                      {
-                        id: dayPoolID,
-                        date: dayStartTimestamp,
-                        pool_id: pool.id,
-                        // things that dont get initialized always
-                        volumeToken0: ZERO_BD,
-                        volumeToken1: ZERO_BD,
-                        volumeUSD: ZERO_BD,
-                        feesUSD: ZERO_BD,
-                        txCount: ZERO_BI,
-                        openingPrice: pool.token0Price,
-                        high: pool.token0Price,
-                        low: pool.token0Price,
-                        close: pool.token0Price,
+  const poolDayData = poolDayDataRO ? { ...poolDayDataRO } :
+    {
+      id: dayPoolID,
+      date: dayStartTimestamp,
+      pool_id: pool.id,
+      // things that dont get initialized always
+      volumeToken0: ZERO_BD,
+      volumeToken1: ZERO_BD,
+      volumeUSD: ZERO_BD,
+      feesUSD: ZERO_BD,
+      txCount: ZERO_BI,
+      openingPrice: pool.token0Price,
+      high: pool.token0Price,
+      low: pool.token0Price,
+      close: pool.token0Price,
 
-                        liquidity: pool.liquidity,
-                        sqrtPrice: pool.sqrtPrice,
-                        token0Price: pool.token0Price,
-                        token1Price: pool.token1Price,
-                        tick: pool.tick,
-                        tvlUSD: pool.totalValueLockedUSD,
-                      };
+      liquidity: pool.liquidity,
+      sqrtPrice: pool.sqrtPrice,
+      token0Price: pool.token0Price,
+      token1Price: pool.token1Price,
+      tick: pool.tick,
+      tvlUSD: pool.totalValueLockedUSD,
+    };
 
   if (pool.token0Price.gt(poolDayData.high)) {
     poolDayData.high = pool.token0Price;
   }
-  
+
   if (pool.token0Price.lt(poolDayData.low)) {
     poolDayData.low = pool.token0Price;
   }
@@ -89,13 +61,13 @@ export async function updatePoolDayData(
   poolDayData.tick = pool.tick;
   poolDayData.tvlUSD = pool.totalValueLockedUSD;
   poolDayData.txCount = poolDayData.txCount + ONE_BI;
-  
+
   context.PoolDayData.set(poolDayData);
   return poolDayData as PoolDayData;
 }
 
 export async function updatePoolHourData(
-  timestamp: number, 
+  timestamp: number,
   pool: Pool,
   context: handlerContext
 ): Promise<PoolHourData> {
@@ -128,8 +100,8 @@ export async function updatePoolHourData(
       tvlUSD: ZERO_BD,
     };
   }
-  
-  const poolHourData = {...temp};
+
+  const poolHourData = { ...temp };
 
   if (pool.token0Price.gt(poolHourData.high)) {
     poolHourData.high = pool.token0Price;
@@ -154,8 +126,8 @@ export async function updatePoolHourData(
 }
 
 export async function updateTokenDayData(
-  timestamp: number, 
-  token: Token, 
+  timestamp: number,
+  token: Token,
   bundle: Bundle,
   context: handlerContext
 ): Promise<TokenDayData> {
@@ -165,24 +137,24 @@ export async function updateTokenDayData(
   const tokenPrice = token.derivedETH.times(bundle.ethPriceUSD);
   const tokenDayDataRO = await context.TokenDayData.get(tokenDayID);
 
-  let tokenDayData = tokenDayDataRO ? {...tokenDayDataRO} :
-                      {
-                        id: tokenDayID,
-                        date: dayStartTimestamp,
-                        token_id: token.id,
-                        volume: ZERO_BD,
-                        volumeUSD: ZERO_BD,
-                        feesUSD: ZERO_BD,
-                        untrackedVolumeUSD: ZERO_BD,
-                        open: tokenPrice,
-                        high: tokenPrice,
-                        low: tokenPrice,
-                        close: tokenPrice,
-                        priceUSD: ZERO_BD,
-                        openingPrice: ZERO_BD,
-                        totalValueLocked: ZERO_BD,
-                        totalValueLockedUSD: ZERO_BD
-                      };
+  let tokenDayData = tokenDayDataRO ? { ...tokenDayDataRO } :
+    {
+      id: tokenDayID,
+      date: dayStartTimestamp,
+      token_id: token.id,
+      volume: ZERO_BD,
+      volumeUSD: ZERO_BD,
+      feesUSD: ZERO_BD,
+      untrackedVolumeUSD: ZERO_BD,
+      open: tokenPrice,
+      high: tokenPrice,
+      low: tokenPrice,
+      close: tokenPrice,
+      priceUSD: ZERO_BD,
+      openingPrice: ZERO_BD,
+      totalValueLocked: ZERO_BD,
+      totalValueLockedUSD: ZERO_BD
+    };
 
   if (tokenPrice.gt(tokenDayData.high)) {
     tokenDayData.high = tokenPrice;
@@ -212,24 +184,24 @@ export async function updateTokenHourData(
   const tokenPrice = token.derivedETH.times(bundle.ethPriceUSD);
   const tokenHourID = `${token.id}-${hourIndex}`;
   const tokenHourDataRO = await context.TokenHourData.get(tokenHourID);
-  const tokenHourData = tokenHourDataRO ? {...tokenHourDataRO} :
-                        {
-                          id: tokenHourID,
-                          periodStartUnix: hourStartUnix,
-                          token_id: token.id,
-                          volume: ZERO_BD,
-                          volumeUSD: ZERO_BD,
-                          untrackedVolumeUSD: ZERO_BD,
-                          feesUSD: ZERO_BD,
-                          open: tokenPrice,
-                          high: tokenPrice,
-                          low: tokenPrice,
-                          close: tokenPrice,
-                          priceUSD: ZERO_BD,
-                          openingPrice: ZERO_BD,
-                          totalValueLocked: ZERO_BD,
-                          totalValueLockedUSD: ZERO_BD
-                        };
+  const tokenHourData = tokenHourDataRO ? { ...tokenHourDataRO } :
+    {
+      id: tokenHourID,
+      periodStartUnix: hourStartUnix,
+      token_id: token.id,
+      volume: ZERO_BD,
+      volumeUSD: ZERO_BD,
+      untrackedVolumeUSD: ZERO_BD,
+      feesUSD: ZERO_BD,
+      open: tokenPrice,
+      high: tokenPrice,
+      low: tokenPrice,
+      close: tokenPrice,
+      priceUSD: ZERO_BD,
+      openingPrice: ZERO_BD,
+      totalValueLocked: ZERO_BD,
+      totalValueLockedUSD: ZERO_BD
+    };
 
   if (tokenPrice.gt(tokenHourData.high)) {
     tokenHourData.high = tokenPrice;

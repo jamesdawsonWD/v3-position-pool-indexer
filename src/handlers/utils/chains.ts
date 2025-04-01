@@ -37,6 +37,8 @@ export interface ChainConfig {
   poolsToSkip: string[];
   poolMappings: string[],
   nativeTokenDetails: NativeTokenDetails;
+  nonfungiblePositionManager: string;
+  poolInitCodeHash?: string;
 }
 
 // Static token definition interface
@@ -59,6 +61,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: true,
     wrappedNativeAddress: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
       "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", // USDC
@@ -98,6 +102,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8", // USDC.e
       "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1", // DAI
@@ -129,6 +135,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: true,
     wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1", // DAI
       "0x7f5c764cbc14f9669b88837ca1490cca17c31607", // USDC.e
@@ -161,6 +169,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913", // USDC
     ],
@@ -186,6 +196,7 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270", // WMATIC
     minimumNativeLocked: new BigDecimal("20000"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
     stablecoinAddresses: [
       "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", // USDC.e
       "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", // DAI
@@ -214,6 +225,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinWrappedNativePoolId:
       "0x4c9dff5169d88f7fbf5e43fc8e2eb56bf9791785729b9fc8c22064a47af12052",
     stablecoinIsToken0: true,
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     wrappedNativeAddress: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", // WBNB
     minimumNativeLocked: new BigDecimal("10"),
     stablecoinAddresses: [
@@ -243,6 +256,7 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7", // WAVAX
     minimumNativeLocked: new BigDecimal("100"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
     stablecoinAddresses: [
       "0xd586e7f844cea2f87f50152665bcbc2c279d8d70", // DAI.e
       "0xba7deebbfc5fa1100fb055a87773e1e99cd3507a", // DAI
@@ -279,6 +293,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: true,
     wrappedNativeAddress: "0x4300000000000000000000000000000000000004", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0x4300000000000000000000000000000000000003", // USDB
     ],
@@ -304,6 +320,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0xcccccccc7021b32ebb4e8c08314bd62f7c653ec4", // USDzC
     ],
@@ -329,6 +347,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // WETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0x79a02482a880bce3f13e09da970dc34db4cd24d1", // USDC.e
     ],
@@ -353,10 +373,12 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     factoryAddress: "0x1f98400000000000000000000000000000000003",
     poolManagerAddress: "0x1f98400000000000000000000000000000000004",
     stablecoinWrappedNativePoolId:
-      "0x25939956ef14a098d95051d86c75890cfd623a9eeba055e46d8dd9135980b37c",
-    stablecoinIsToken0: false,
-    wrappedNativeAddress: "0x0000000000000000000000000000000000000000", // Native ETH
+      "0x65081cb48d74a32e9ccfed75164b8c09972dbcf1",
+    stablecoinIsToken0: true,
+    wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // Native ETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+    poolInitCodeHash: `0x8f8409fa29820f69dfd4336632637217348bb38993c4e69fa5a3a68216af4793`,
     stablecoinAddresses: [
       "0x078d782b760474a361dda0af3839290b0ef57ad6", // USDC
       "0x20cab320a855b39f724131c69424240519573f81", // DAI
@@ -384,6 +406,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     stablecoinIsToken0: false,
     wrappedNativeAddress: "0x0000000000000000000000000000000000000000", // Native ETH
     minimumNativeLocked: new BigDecimal("1"),
+    nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+
     stablecoinAddresses: [
       "0xba9986d2381edf1da03b0b9c1f8b00dc4aacc369", // USDC
     ],
@@ -426,3 +450,36 @@ export function isStablecoin(chainId: number, tokenAddress: string): boolean {
   const config = getChainConfig(chainId);
   return config.stablecoinAddresses.includes(tokenAddress.toLowerCase());
 }
+
+
+export const getRpcUrl = (chainId: number): string => {
+    switch (chainId) {
+        case 1:
+            return process.env.MAINNET_RPC_URL || "https://eth.drpc.org";
+        case 42161:
+            return process.env.ARBITRUM_RPC_URL || "https://arbitrum.drpc.org";
+        case 10:
+            return process.env.OPTIMISM_RPC_URL || "https://optimism.drpc.org";
+        case 8453:
+            return process.env.BASE_RPC_URL || "https://base.drpc.org";
+        case 137:
+            return process.env.POLYGON_RPC_URL || "https://polygon.drpc.org";
+        case 43114:
+            return process.env.AVALANCHE_RPC_URL || "https://avalanche.drpc.org";
+        case 56:
+            return process.env.BSC_RPC_URL || "https://bsc.drpc.org";
+        case 81457:
+            return process.env.BLAST_RPC_URL || "https://blast.drpc.org";
+        case 7777777:
+            return process.env.ZORA_RPC_URL || "https://zora.drpc.org";
+        case 1868:
+            return process.env.SONIEUM_RPC_URL || "https://sonieum.drpc.org";
+        case 130:
+            return process.env.UNICHAIN_RPC_URL || "https://unichain.drpc.org";
+        case 57073:
+            return process.env.INK_RPC_URL || "https://ink.drpc.org";
+        // Add generic fallback for any chain
+        default:
+            throw new Error(`No RPC URL configured for chainId ${chainId}`);
+    }
+};

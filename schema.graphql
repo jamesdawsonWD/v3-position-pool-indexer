@@ -1,11 +1,8 @@
 type Factory {
-  # factory address
   id: ID!
-  # amount of pools created
   poolCount: BigInt!
-  # amoutn of transactions all time
   txCount: BigInt!
-  # total volume all time in derived USD
+    # total volume all time in derived USD
   totalVolumeUSD: BigDecimal!
   # total volume all time in derived ETH
   totalVolumeETH: BigDecimal!
@@ -24,7 +21,6 @@ type Factory {
   # TVL derived in ETH untracked
   totalValueLockedETHUntracked: BigDecimal!
 
-  # current owner of the factory
   owner: ID!
 }
 
@@ -36,27 +32,18 @@ type Bundle {
 }
 
 type Token {
-  # token address
   id: ID!
-  # token symbol
   symbol: String!
-  # token name
   name: String!
-  # token decimals
   decimals: BigInt!
-  # volume in token units
   volume: BigDecimal!
-  # volume in derived USD
   volumeUSD: BigDecimal!
   # volume in USD even on pools with less reliable USD values
   untrackedVolumeUSD: BigDecimal!
   # fees in USD
   feesUSD: BigDecimal!
-  # transactions across all pools that include this token
   txCount: BigInt!
-  # number of pools containing this token
   poolCount: BigInt!
-  # liquidity across all pools in token units
   totalValueLocked: BigDecimal!
   # liquidity across all pools in derived USD
   totalValueLockedUSD: BigDecimal!
@@ -73,51 +60,30 @@ type Token {
 }
 
 type Pool {
-  # pool address
   id: ID!
-  # creation
   createdAtTimestamp: BigInt!
-  # block pool was created at
   createdAtBlockNumber: BigInt!
-  # token0
   token0: Token!
-  # token1
   token1: Token!
-  # fee amount
   feeTier: BigInt!
-  # in range liquidity
   liquidity: BigInt!
-  # current price tracker
   sqrtPrice: BigInt!
-  # token0 per token1
   token0Price: BigDecimal!
-  # token1 per token0
   token1Price: BigDecimal!
-  # current tick
   tick: BigInt
-  # current observation index
   observationIndex: BigInt!
-  # all time token0 swapped
   volumeToken0: BigDecimal!
-  # all time token1 swapped
   volumeToken1: BigDecimal!
-  # all time USD swapped
   volumeUSD: BigDecimal!
   # all time USD swapped, unfiltered for unreliable USD pools
   untrackedVolumeUSD: BigDecimal!
   # fees in USD
   feesUSD: BigDecimal!
-  # all time number of transactions
   txCount: BigInt!
-  # all time fees collected token0
   collectedFeesToken0: BigDecimal!
-  # all time fees collected token1
   collectedFeesToken1: BigDecimal!
-  # all time fees collected derived USD
   collectedFeesUSD: BigDecimal!
-  # total token 0 across all ticks
   totalValueLockedToken0: BigDecimal!
-  # total token 1 across all ticks
   totalValueLockedToken1: BigDecimal!
   # tvl derived ETH
   totalValueLockedETH: BigDecimal!
@@ -125,13 +91,9 @@ type Pool {
   totalValueLockedUSD: BigDecimal!
   # TVL derived in USD untracked
   totalValueLockedUSDUntracked: BigDecimal!
-  # Fields used to help derived relationship
-  liquidityProviderCount: BigInt! # used to detect new exchanges
-  # hourly snapshots of pool data
+  liquidityProviderCount: BigInt!
   poolHourData: [PoolHourData!]! @derivedFrom(field: "pool")
-  # daily snapshots of pool data
   poolDayData: [PoolDayData!]! @derivedFrom(field: "pool")
-  # derived fields
   mints: [Mint!]! @derivedFrom(field: "pool")
   burns: [Burn!]! @derivedFrom(field: "pool")
   swaps: [Swap!]! @derivedFrom(field: "pool")
@@ -140,45 +102,85 @@ type Pool {
 }
 
 type Tick {
-  # format: <pool address>#<tick index>
   id: ID!
-  # pool address
   poolAddress: String
-  # tick index
   tickIdx: BigInt!
-  # pointer to pool
   pool: Pool!
-  # total liquidity pool has as tick lower or upper
   liquidityGross: BigInt!
-  # how much liquidity changes when tick crossed
   liquidityNet: BigInt!
-  # calculated price of token0 of tick within this pool - constant
   price0: BigDecimal!
-  # calculated price of token1 of tick within this pool - constant
   price1: BigDecimal!
-  # created time
   createdAtTimestamp: BigInt!
-  # created block
   createdAtBlockNumber: BigInt!
 }
 
 type Transaction {
-  # txn hash
   id: ID!
-  # block txn was included in
   blockNumber: BigInt!
-  # timestamp txn was confirmed
   timestamp: BigInt!
-  # gas used during txn execution
   gasUsed: BigInt!
   gasPrice: BigInt!
-  # derived values
+  increases: [IncreaseLiquidity!]! @derivedFrom(field: "transaction")
+  decreases: [DecreaseLiquidity!]! @derivedFrom(field: "transaction")
+  positionCollects: [PositionCollect!]! @derivedFrom(field: "transaction")
   mints: [Mint!]! @derivedFrom(field: "transaction")
   burns: [Burn!]! @derivedFrom(field: "transaction")
   swaps: [Swap!]! @derivedFrom(field: "transaction")
-  flashed: [Flash!]! @derivedFrom(field: "transaction")
+  transfers: [Transfer!]! @derivedFrom(field: "transaction")
   collects: [Collect!]! @derivedFrom(field: "transaction")
 }
+
+type IncreaseLiquidity {
+  id: ID!
+  position: Position!
+  timestamp: BigInt!
+  amount0: BigInt!
+  amount1: BigInt!
+  liquidity: BigInt!
+  tokenId: BigInt!
+  transaction: Transaction!
+   # order within the txn
+  logIndex: BigInt
+}
+
+type Transfer {
+  id: ID!
+  position: Position!
+  timestamp: BigInt!
+  from: Bytes!
+  to: Bytes!
+  tokenId: BigInt!
+  transaction: Transaction!
+  # order within the txn
+  logIndex: BigInt
+}
+
+type DecreaseLiquidity {
+  id: ID!
+  position: Position!
+  timestamp: BigInt!
+  amount0: BigInt!
+  amount1: BigInt!
+  tokenId: BigInt!
+  liquidity: BigInt!
+  transaction: Transaction!
+   # order within the txn
+  logIndex: BigInt
+}
+
+type PositionCollect {
+  id: ID!
+  position: Position!
+  timestamp: BigInt!
+  amount0: BigInt!
+  amount1: BigInt!
+  tokenId: BigInt!
+  recipient: Bytes!
+  transaction: Transaction!
+  # order within the txn
+  logIndex: BigInt
+}
+
 
 type Mint {
   # transaction hash + "#" + index in mints Transaction array
@@ -306,82 +308,23 @@ type Collect {
   logIndex: BigInt
 }
 
-type Flash {
-  # transaction hash + "-" + index in collect Transaction array
-  id: ID!
-  # pointer to txn
-  transaction: Transaction!
-  # timestamp of event
-  timestamp: BigInt!
-  # pool collect occured within
-  pool: Pool!
-  # sender of the flash
-  sender: Bytes!
-  # recipient of the flash
-  recipient: Bytes!
-  # amount of token0 flashed
-  amount0: BigDecimal!
-  # amount of token1 flashed
-  amount1: BigDecimal!
-  # derived amount based on available prices of tokens
-  amountUSD: BigDecimal!
-  # amount token0 paid for flash
-  amount0Paid: BigDecimal!
-  # amount token1 paid for flash
-  amount1Paid: BigDecimal!
-  # index within the txn
-  logIndex: BigInt
-}
 
-# Data accumulated and condensed into day stats for all of Uniswap
-type UniswapDayData {
-  # timestamp rounded to current day by dividing by 86400
+type PoolHourData {
   id: ID!
-  # timestamp rounded to current day by dividing by 86400
-  date: Int!
-  # total daily volume in Uniswap derived in terms of ETH
-  volumeETH: BigDecimal!
-  # total daily volume in Uniswap derived in terms of USD
-  volumeUSD: BigDecimal!
-  # total daily volume in Uniswap derived in terms of USD untracked
-  volumeUSDUntracked: BigDecimal!
-  # fees in USD
-  feesUSD: BigDecimal!
-  # number of daily transactions
-  txCount: BigInt!
-  # tvl in terms of USD
-  tvlUSD: BigDecimal!
-}
-
-# Data accumulated and condensed into day stats for each pool
-type PoolDayData {
-  # timestamp rounded to current day by dividing by 86400
-  id: ID!
-  # timestamp rounded to current day by dividing by 86400
-  date: Int!
-  # pointer to pool
+  periodStartUnix: Int!
   pool: Pool!
-  # in range liquidity at end of period
   liquidity: BigInt!
-  # current price tracker at end of period
   sqrtPrice: BigInt!
-  # price of token0 - derived from sqrtPrice
   token0Price: BigDecimal!
-  # price of token1 - derived from sqrtPrice
   token1Price: BigDecimal!
-  # current tick at end of period
   tick: BigInt
-  # tvl derived in USD at end of period
-  tvlUSD: BigDecimal!
-  # volume in token0
+    tvlUSD: BigDecimal!
   volumeToken0: BigDecimal!
-  # volume in token1
   volumeToken1: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
   # fees in USD
   feesUSD: BigDecimal!
-  # numebr of transactions during period
   txCount: BigInt!
   # opening price of token0
   openingPrice: BigDecimal!
@@ -393,35 +336,23 @@ type PoolDayData {
   close: BigDecimal!
 }
 
-# hourly stats tracker for pool
-type PoolHourData {
-  # format: <pool address>-<timestamp>
+type PoolDayData {
   id: ID!
-  # unix timestamp for start of hour
-  periodStartUnix: Int!
-  # pointer to pool
+  date: Int!
   pool: Pool!
-  # in range liquidity at end of period
   liquidity: BigInt!
-  # current price tracker at end of period
   sqrtPrice: BigInt!
-  # price of token0 - derived from sqrtPrice
   token0Price: BigDecimal!
-  # price of token1 - derived from sqrtPrice
   token1Price: BigDecimal!
-  # current tick at end of period
   tick: BigInt
   # tvl derived in USD at end of period
   tvlUSD: BigDecimal!
-  # volume in token0
   volumeToken0: BigDecimal!
-  # volume in token1
   volumeToken1: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
   # fees in USD
   feesUSD: BigDecimal!
-  # numebr of transactions during period
   txCount: BigInt!
   # opening price of token0
   openingPrice: BigDecimal!
@@ -493,4 +424,31 @@ type TokenHourData {
   low: BigDecimal!
   # close price USD
   close: BigDecimal!
+}
+
+type Position {
+  id: ID! # tokenId from NonfungiblePositionManager
+
+  increases: [IncreaseLiquidity!]! @derivedFrom(field: "position")
+  decreases: [DecreaseLiquidity!]! @derivedFrom(field: "position")
+  collects: [PositionCollect!]! @derivedFrom(field: "position")
+  transfers: [Transfer!]! @derivedFrom(field: "position")
+
+  transaction: Transaction!
+  owner: Wallet!  
+  # === Derived fields ===
+  liquidity: BigInt!
+  depositedToken0: BigInt!
+  depositedToken1: BigInt!
+  collectedFeesToken0: BigInt!
+  collectedFeesToken1: BigInt!
+  initialMintTimestamp: BigInt!
+  lastUpdatedTimestamp: BigInt!
+  burned: Boolean!
+}
+
+type Wallet {
+  id: ID!
+  positions: [Position!]! @derivedFrom(field: "owner")
+  
 }

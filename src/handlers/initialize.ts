@@ -1,11 +1,12 @@
 import { UniswapV3Pool, Token, Pool, Bundle } from "generated";
 import { CHAIN_CONFIGS } from "./utils/chains";
-import { findNativePerToken, getNativePriceInUSD } from "./utils/pricing";
 import { updatePoolDayData, updatePoolHourData } from "./utils/intervalUpdates";
+import { findNativePerToken, getNativePriceInUSD } from "./utils/pricing";
+import { createPoolAddress } from "./utils";
 
 UniswapV3Pool.Initialize.handlerWithLoader({
-    loader: async ({event, context}) => {
-        const poolId = `${event.chainId}-${event.srcAddress.toLowerCase()}`;
+    loader: async ({ event, context }) => {
+        const poolId = createPoolAddress(event.chainId, event.srcAddress);
         const pool = await context.Pool.get(poolId);
         if (!pool) return;
 
@@ -18,7 +19,7 @@ UniswapV3Pool.Initialize.handlerWithLoader({
         return [pool, ...res];
     },
 
-    handler: async ({event, context, loaderReturn}) => {
+    handler: async ({ event, context, loaderReturn }) => {
         if (!loaderReturn) return;
 
         for (const entity of loaderReturn) {
@@ -41,9 +42,9 @@ UniswapV3Pool.Initialize.handlerWithLoader({
             sqrtPrice: event.params.sqrtPriceX96,
             tick: event.params.tick
         };
-        
+
         context.Pool.set(pool);
-    
+      
         // update ETH price now that prices could have changed
         bundle = {
             ...bundle,
@@ -56,7 +57,7 @@ UniswapV3Pool.Initialize.handlerWithLoader({
         };
     
         context.Bundle.set(bundle);
-    
+          
         updatePoolDayData(event.block.timestamp, pool, context);
         updatePoolHourData(event.block.timestamp, pool, context);
     
@@ -89,7 +90,7 @@ UniswapV3Pool.Initialize.handlerWithLoader({
             ...token1,
             derivedETH: derivedETH_t1
         };
-
+        
         context.Token.set(token0);
         context.Token.set(token1);
     }
