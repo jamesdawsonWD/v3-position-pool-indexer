@@ -165,8 +165,8 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     factoryAddress: "0x33128a8fc17869897dce68ed026d694621f6fdfd",
     poolManagerAddress: "0x498581ff718922c3f8e6a244956af099b2652b2b",
     stablecoinWrappedNativePoolId:
-      "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
-    stablecoinIsToken0: true,
+      "0xd0b53d9277642d899df5c87a3966a349a798f224",
+    stablecoinIsToken0: false,
     wrappedNativeAddress: "0x4200000000000000000000000000000000000006", // WETH
     minimumNativeLocked: new BigDecimal("1"),
     nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
@@ -223,7 +223,7 @@ export const CHAIN_CONFIGS: { [chainId: number]: ChainConfig } = {
     factoryAddress: "0xdb1d10011ad0ff90774d0c6bb92e5c5c8b4461f7",
     poolManagerAddress: "0x28e2ea090877bf75740558f6bfb36a5ffee9e9df",
     stablecoinWrappedNativePoolId:
-      "0x813c0decb1097fff46d0ed6a39fb5f6a83043f4",
+      "0x7862d9b4be2156b15d54f41ee4ede2d5b0b455e4",
     stablecoinIsToken0: true,
     nonfungiblePositionManager: "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
 
