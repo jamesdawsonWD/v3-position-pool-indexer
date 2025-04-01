@@ -71,9 +71,6 @@ UniswapV3Factory.PoolCreated.handlerWithLoader({
         factory.poolCount = factory.poolCount + ONE_BI;
         const tokens = [];
 
-        context.log.debug(`${token0RO?.name}`);
-        context.log.debug(`${token1RO?.name}`);
-
         try {
             const arr = [];
 
