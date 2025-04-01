@@ -36,36 +36,36 @@ contracts:
             - gasPrice
             - from
 
-  - name: NonfungiblePositionManager
-    handler: src/EventHandlers.ts
-    events:
-      - event: IncreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
-        field_selection:
-          transaction_fields:
-            - hash
-            - gasPrice
-            - from
+  # - name: NonfungiblePositionManager
+  #   handler: src/EventHandlers.ts
+  #   events:
+  #     - event: IncreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
+  #       field_selection:
+  #         transaction_fields:
+  #           - hash
+  #           - gasPrice
+  #           - from
 
-      - event: DecreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
-        field_selection:
-          transaction_fields:
-            - hash
-            - gasPrice
-            - from
+  #     - event: DecreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)
+  #       field_selection:
+  #         transaction_fields:
+  #           - hash
+  #           - gasPrice
+  #           - from
 
-      - event: Collect(uint256 indexed tokenId, address recipient, uint256 amount0, uint256 amount1)
-        field_selection:
-          transaction_fields:
-            - hash
-            - gasPrice
-            - from
+  #     - event: Collect(uint256 indexed tokenId, address recipient, uint256 amount0, uint256 amount1)
+  #       field_selection:
+  #         transaction_fields:
+  #           - hash
+  #           - gasPrice
+  #           - from
 
-      - event: Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
-        field_selection:
-          transaction_fields:
-            - hash
-            - gasPrice
-            - from
+  #     - event: Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
+  #       field_selection:
+  #         transaction_fields:
+  #           - hash
+  #           - gasPrice
+  #           - from
 
 networks:
   - id: 8453 # Base
@@ -76,9 +76,9 @@ networks:
       - name: UniswapV3Factory
         address:
           - 0x33128a8fC17869897dcE68Ed026d694621f6FDfD
-      - name: NonfungiblePositionManager
-        address:
-          - 0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1
+      # - name: NonfungiblePositionManager
+      #   address:
+      #     - 0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1
       - name: UniswapV3Pool
   - id: 130 # Unichain
     hypersync_config:
@@ -88,7 +88,7 @@ networks:
       - name: UniswapV3Factory
         address:
           - 0x1F98400000000000000000000000000000000003
-      - name: NonfungiblePositionManager
-        address:
-          - 0x943e6e07a7E8E791dAFC44083e54041D743C46E9
+      # - name: NonfungiblePositionManager
+      #   address:
+      #     - 0x943e6e07a7E8E791dAFC44083e54041D743C46E9
       - name: UniswapV3Pool
